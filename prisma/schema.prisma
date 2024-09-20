@@ -1,0 +1,217 @@
+
+datasource db {
+  provider = "postgresql" 
+  url      = env("DATABASE_URL")
+}
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+model Usuario {
+  idUsuario        Int                @id @default(autoincrement())
+  idTipoUsuario    Int
+  email            String             @unique
+  password         String
+  nombreCompleto   String
+  nombreEmpresa    String?
+  telefono         String
+  direccion        String
+  infoEmpresa      String?
+  verificado       Boolean
+  fotoPerfil       String?
+  isActive         Boolean
+  createdAt        DateTime           @default(now())
+  updatedAt        DateTime           @updatedAt
+
+  likesEmitidos    Like[]             @relation("LikesEmitidos")
+  likesRecibidos   Like[]             @relation("LikesRecibidos")
+  telefonos        Telefono[]
+  direcciones      Direccion[]
+  vendedorProductos VendedorProducto[]
+  compradorProductos CompradorProducto[]
+  inventarios      Inventario[]
+  productosInteres ProductoInteres[]
+  ordenesComprador Orden[]            @relation("OrdenesComprador")
+  ordenesVendedor  Orden[]            @relation("OrdenesVendedor")
+}
+
+model Like {
+  iLike          Int     @id @default(autoincrement())
+  idUsuarioEmisor Int
+  idUsuarioReceptor Int
+  tipoReaccion   TipoReaccion
+  createdAt      DateTime @default(now())
+  updatedAt      DateTime @updatedAt
+
+  usuarioEmisor   Usuario @relation("LikesEmitidos", fields: [idUsuarioEmisor], references: [idUsuario])
+  usuarioReceptor Usuario @relation("LikesRecibidos", fields: [idUsuarioReceptor], references: [idUsuario])
+}
+
+enum TipoReaccion {
+  LIKE
+  DISLIKE
+}
+
+model Telefono {
+  idTelefono     Int    @id @default(autoincrement())
+  idUsuario      Int
+  numeroTelefono String
+  createdAt      DateTime @default(now())
+  updatedAt      DateTime @updatedAt
+
+  usuario        Usuario @relation(fields: [idUsuario], references: [idUsuario])
+}
+
+model Direccion {
+  idDireccion    Int    @id @default(autoincrement())
+  idUsuario      Int
+  direccion      String
+  createdAt      DateTime @default(now())
+  updatedAt      DateTime @updatedAt
+
+  usuario        Usuario @relation(fields: [idUsuario], references: [idUsuario])
+}
+
+model Producto {
+  idProducto     Int    @id @default(autoincrement())
+  idCategoria    Int
+  nombre         String
+  imagen         String
+  createdAt      DateTime @default(now())
+  updatedAt      DateTime @updatedAt
+
+  categoria      Categoria @relation(fields: [idCategoria], references: [idCategoria])
+  vendedorProductos VendedorProducto[]
+  compradorProductos CompradorProducto[]
+  inventarios      Inventario[]
+  productosInteres ProductoInteres[]
+  ordenes          Orden[]
+}
+
+model Categoria {
+  idCategoria    Int    @id @default(autoincrement())
+  nombre         String
+  descripcion    String?
+  createdAt      DateTime @default(now())
+  updatedAt      DateTime @updatedAt
+
+  productos      Producto[]
+}
+
+model VendedorProducto {
+  idVendedorProducto Int     @id @default(autoincrement())
+  idUsuario          Int
+  idProducto         Int
+  precioxTN          Decimal @db.Decimal(10, 2)
+  ubicacion          String
+  statusEmpresa      String
+  cantidadDisponible String
+  descripcion        String?
+  foto               String?
+  createdAt          DateTime @default(now())
+  updatedAt          DateTime @updatedAt
+
+  producto           Producto @relation(fields: [idProducto], references: [idProducto])
+  usuario            Usuario  @relation(fields: [idUsuario], references: [idUsuario])
+}
+
+model CompradorProducto {
+  idCompradorProducto Int    @id @default(autoincrement())
+  idUsuario           Int
+  idProducto          Int
+  cantidadRequerida   Decimal @db.Decimal(10, 2)
+  precioMax           Decimal @db.Decimal(10, 2)
+  createdAt          DateTime @default(now())
+  updatedAt          DateTime @updatedAt
+
+  producto           Producto @relation(fields: [idProducto], references: [idProducto])
+  usuario            Usuario  @relation(fields: [idUsuario], references: [idUsuario])
+}
+
+model Inventario {
+  idInventario    Int    @id @default(autoincrement())
+  idUsuario       Int
+  idProducto      Int
+  cantidad        Decimal @db.Decimal(10, 2)
+  unidadMedida    UnidadMedida
+  costoxUnidad    Decimal @db.Decimal(10, 2)
+  createdAt      DateTime @default(now())
+  updatedAt      DateTime @updatedAt
+
+  producto       Producto @relation(fields: [idProducto], references: [idProducto])
+  usuario        Usuario  @relation(fields: [idUsuario], references: [idUsuario])
+}
+
+enum UnidadMedida {
+  TONELADA
+  UNIDADES
+}
+
+model ProductoInteres {
+  idInteres       Int    @id @default(autoincrement())
+  idProducto      Int
+  idUsuario       Int
+  precioMax       Decimal @db.Decimal(10, 2)
+  createdAt      DateTime @default(now())
+  updatedAt      DateTime @updatedAt
+
+  producto       Producto @relation(fields: [idProducto], references: [idProducto])
+  usuario        Usuario  @relation(fields: [idUsuario], references: [idUsuario])
+}
+
+model Orden {
+  idOrden        Int    @id @default(autoincrement())
+  idComprador    Int
+  idVendedor     Int
+  idProducto     Int
+  tipoOrden      TipoOrden
+  precio         Decimal @db.Decimal(10, 2)
+  status         EstadoOrden
+  fechaAcordada  String
+  descripcion    String?
+  fotoProducto   String?
+  direccion      String
+  createdAt      DateTime @default(now())
+  updatedAt      DateTime @updatedAt
+
+  comprador      Usuario @relation("OrdenesComprador", fields: [idComprador], references: [idUsuario])
+  vendedor       Usuario @relation("OrdenesVendedor", fields: [idVendedor], references: [idUsuario])
+  producto       Producto @relation(fields: [idProducto], references: [idProducto])
+}
+
+enum TipoOrden {
+  COMPRA
+  VENTA
+}
+
+enum EstadoOrden {
+  PENDIENTE
+  EXITOSO
+  FALLIDO
+  CANCELADO
+}
+
+model PasswordReset {
+  id        Int      @id @default(autoincrement())
+  email     String
+  token     String
+  expiresAt DateTime
+  createdAt DateTime @default(now())
+}
+
+enum UserRole {
+  ADMIN
+  USER
+}
+
+model UserAdmin {
+  id        Int      @id @default(autoincrement())
+  nombre    String
+  email     String   @unique
+  password  String
+  isActive  Boolean  @default(true)
+  role      UserRole @default(USER)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
