@@ -27,6 +27,10 @@ import { diskStorage } from 'multer';
 import { extname } from 'path';
 import { existsSync, mkdirSync, unlinkSync } from 'fs';
 import { File } from 'multer'; // Importar el tipo File desde multer
+import { Roles } from '../../../auth/decorators/roles.decorator';
+import { UserRole } from '../dto/enums/user-role.enum';
+import { AuthGuard } from '@nestjs/passport';
+import { RolesGuard } from '../../../auth/guards/roles.guard';
 
 @Controller('usuarios')
 export class UsuarioController {
@@ -38,7 +42,8 @@ export class UsuarioController {
   }
 
   @Get()
-  @UseGuards(JwtAuthGuard)
+  @UseGuards(AuthGuard('jwt-user'), RolesGuard) // Usa el mismo guard para ambos
+  @Roles(UserRole.ADMIN, UserRole.USER)
   async findAll(@Query() paginationDto: PaginationDto) {
     const { page = 1, limit = 10 } = paginationDto;
 
@@ -63,15 +68,18 @@ export class UsuarioController {
   }
 
   @Get(':id')
-  @UseGuards(JwtAuthGuard)
+  @UseGuards(AuthGuard('jwt-user'), RolesGuard)
+  @Roles(UserRole.USER, UserRole.ADMIN)
   findOne(@Param('id', ParseIntPipe) id: number) {
     return this.usuarioService.findOne(+id);
   }
 
   @Get('micuenta/me')
-  @UseGuards(JwtAuthGuard)
+  @UseGuards(AuthGuard('jwt-user'), RolesGuard)
+  @Roles(UserRole.USER)
   async findMe(@Req() req: Request & { user?: User }) {
     const userId = req.user?.idUsuario;
+    console.log(userId);
 
     if (!userId) {
       throw new UnauthorizedException(
@@ -89,7 +97,8 @@ export class UsuarioController {
   }
 
   @Patch(':id')
-  @UseGuards(JwtAuthGuard)
+  @UseGuards(AuthGuard('jwt-user'), RolesGuard)
+  @Roles(UserRole.USER, UserRole.ADMIN)
   @UseInterceptors(
     FileInterceptor('file', {
       storage: diskStorage({
@@ -124,7 +133,7 @@ export class UsuarioController {
     @UploadedFile() file: File,
     @Req() req: Request & { user?: User },
   ) {
-    const usuarioAutenticadoId = req.user?.idUsuario;
+    const usuarioAutenticadoId = req.user?.sub;
 
     if (usuarioAutenticadoId !== +id) {
       throw new UnauthorizedException(
@@ -154,6 +163,7 @@ export class UsuarioController {
     return this.usuarioService.update(id, updatedData);
   }
 
+  //debe llevar @UseGuards(AuthGuard('jwt-user'), RolesGuard)??
   @Post('upload')
   @UseInterceptors(
     FileInterceptor('file', {
@@ -194,6 +204,8 @@ export class UsuarioController {
   }
 
   @Delete(':id')
+  @UseGuards(AuthGuard('jwt-user'), RolesGuard)
+  @Roles(UserRole.ADMIN)
   remove(@Param('id', ParseIntPipe) id: number) {
     return this.usuarioService.remove(+id);
   }

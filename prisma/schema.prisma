@@ -23,6 +23,7 @@ model Usuario {
   isActive         Boolean
   createdAt        DateTime           @default(now())
   updatedAt        DateTime           @updatedAt
+  role              UserRole           @default(USER) // Establece el rol predeterminado
 
   likesEmitidos    Like[]             @relation("LikesEmitidos")
   likesRecibidos   Like[]             @relation("LikesRecibidos")
@@ -35,6 +36,7 @@ model Usuario {
   ordenesComprador Orden[]            @relation("OrdenesComprador")
   ordenesVendedor  Orden[]            @relation("OrdenesVendedor")
 }
+
 
 model Like {
   iLike          Int     @id @default(autoincrement())

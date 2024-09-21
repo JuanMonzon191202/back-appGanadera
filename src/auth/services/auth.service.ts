@@ -36,9 +36,16 @@ export class AuthService {
   async login(body: { email: string; password: string }) {
     const user = await this.validateUser(body.email, body.password);
     if (!user) {
-      throw new UnauthorizedException('Credenciales inválidas');
+      throw new UnauthorizedException(
+        'Credenciales inválidas' + body.email + body.password,
+      );
     }
-    const payload = { username: user.email, sub: user.idUsuario };
+    const payload = {
+      email: user.email,
+      sub: user.idUsuario,
+      idUsuario: user.idUsuario,
+      rol: user.role,
+    };
     return {
       access_token: this.jwtService.sign(payload),
     };
@@ -47,7 +54,7 @@ export class AuthService {
   // Método para iniciar sesión de administradores
   async logAdmin(admin: any) {
     const payload = {
-      username: admin.email,
+      email: admin.email,
       sub: admin.id,
       rol: admin.role,
     };

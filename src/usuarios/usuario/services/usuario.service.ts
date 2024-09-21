@@ -65,6 +65,8 @@ export class UsuarioService {
   }
 
   async findOne(idUsuario: number) {
+    // console.log(idUsuario, 'cascmasakncaskjn');
+
     return this.prisma.usuario.findUnique({
       where: {
         idUsuario: idUsuario,
@@ -73,6 +75,8 @@ export class UsuarioService {
   }
 
   async findMepls(idtoken: number) {
+    console.log(idtoken);
+
     return this.prisma.usuario.findUnique({
       where: {
         idUsuario: idtoken,

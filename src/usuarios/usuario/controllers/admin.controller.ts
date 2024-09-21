@@ -7,6 +7,7 @@ import {
   UseGuards,
   ParseIntPipe,
   UnauthorizedException,
+  Get,
 } from '@nestjs/common';
 import { AdminService } from '../services/admin.service';
 import { CreateUserAdminDto } from '../dto/admin-dto/create-admin.dto';
@@ -28,7 +29,7 @@ export class AdminController {
 
   // Endpoint para crear un nuevo administrador (solo ADMIN)
   @Post('create')
-  @UseGuards(AuthGuard('jwt'), RolesGuard)
+  @UseGuards(AuthGuard('jwt-admin'), RolesGuard)
   @Roles(UserRole.ADMIN)
   async create(@Body() createUserAdminDto: CreateUserAdminDto) {
     return this.adminService.create(createUserAdminDto);
@@ -36,7 +37,7 @@ export class AdminController {
 
   // Endpoint para actualizar un administrador existente (solo ADMIN)
   @Patch(':id')
-  @UseGuards(AuthGuard('jwt'), RolesGuard)
+  @UseGuards(AuthGuard('jwt-admin'), RolesGuard)
   @Roles(UserRole.ADMIN)
   async update(
     @Param('id', ParseIntPipe) id: number,
@@ -64,5 +65,12 @@ export class AdminController {
     }
 
     return this.authService.logAdmin(admin);
+  }
+  // Endpoint para obtener todos los administradores (solo ADMIN)
+  @Get()
+  @UseGuards(AuthGuard('jwt-admin'), RolesGuard) // Usa 'jwt-admin'
+  @Roles(UserRole.ADMIN)
+  async findAll() {
+    return this.adminService.findAll();
   }
 }
