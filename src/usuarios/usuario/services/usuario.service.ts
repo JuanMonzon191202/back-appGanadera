@@ -8,7 +8,7 @@ import { PaginationDto } from '../dto/paginacion-dto/pagination.dto';
 
 @Injectable()
 export class UsuarioService {
-  constructor(private prisma: PrismaService) {}
+  constructor(private readonly prisma: PrismaService) {}
 
   async create(data: {
     idTipoUsuario: number;
@@ -50,6 +50,18 @@ export class UsuarioService {
       this.prisma.usuario.findMany({
         skip,
         take,
+        select: {
+          password: false,
+          idUsuario: true,
+          email: true,
+          nombreCompleto: true,
+          telefono: true,
+          verificado: true,
+          infoEmpresa: true,
+          fotoPerfil: true,
+          isActive: true,
+          role: true,
+        },
       }),
       this.prisma.usuario.count(),
     ]);
@@ -65,21 +77,41 @@ export class UsuarioService {
   }
 
   async findOne(idUsuario: number) {
-    // console.log(idUsuario, 'cascmasakncaskjn');
-
     return this.prisma.usuario.findUnique({
       where: {
         idUsuario: idUsuario,
+      },
+      select: {
+        password: false,
+        idUsuario: true,
+        email: true,
+        nombreCompleto: true,
+        telefono: true,
+        verificado: true,
+        infoEmpresa: true,
+        fotoPerfil: true,
+        isActive: true,
+        role: true,
       },
     });
   }
 
   async findMepls(idtoken: number) {
-    console.log(idtoken);
-
     return this.prisma.usuario.findUnique({
       where: {
         idUsuario: idtoken,
+      },
+      select: {
+        password: false,
+        idUsuario: true,
+        email: true,
+        nombreCompleto: true,
+        telefono: true,
+        verificado: true,
+        infoEmpresa: true,
+        fotoPerfil: true,
+        isActive: true,
+        role: true,
       },
     });
   }

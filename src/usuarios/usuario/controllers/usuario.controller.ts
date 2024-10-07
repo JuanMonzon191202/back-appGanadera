@@ -19,14 +19,13 @@ import {
 import { UsuarioService } from '../services/usuario.service';
 import { CreateUsuarioDto } from '../dto/usuarios-dto/create-usuario.dto';
 import { UpdateUsuarioDto } from '../dto/usuarios-dto/update-usuario.dto';
-import { JwtAuthGuard } from '../../../auth/guards/jwt-auth.guard';
+
 import { User } from '../../../types/usuario.interface';
 import { PaginationDto } from '../dto/paginacion-dto/pagination.dto';
 import { FileInterceptor } from '@nestjs/platform-express';
-import { diskStorage } from 'multer';
 import { extname } from 'path';
 import { existsSync, mkdirSync, unlinkSync } from 'fs';
-import { File } from 'multer'; // Importar el tipo File desde multer
+import { File, diskStorage } from 'multer'; // Importar el tipo File desde multer
 import { Roles } from '../../../auth/decorators/roles.decorator';
 import { UserRole } from '../dto/enums/user-role.enum';
 import { AuthGuard } from '@nestjs/passport';
@@ -117,7 +116,7 @@ export class UsuarioController {
         },
       }),
       fileFilter: (req, file, cb) => {
-        if (!file.mimetype.match(/\/(jpg|jpeg|png|gif)$/)) {
+        if (!RegExp(/\/(jpg|jpeg|png|gif)$/).exec(file.mimetype)) {
           return cb(
             new BadRequestException('Solo se permiten archivos de imagen'),
             false,
@@ -164,6 +163,7 @@ export class UsuarioController {
   }
 
   //debe llevar @UseGuards(AuthGuard('jwt-user'), RolesGuard)??
+  /*
   @Post('upload')
   @UseInterceptors(
     FileInterceptor('file', {
@@ -202,15 +202,11 @@ export class UsuarioController {
       filePath: file.path,
     };
   }
-
+*/
   @Delete(':id')
   @UseGuards(AuthGuard('jwt-user'), RolesGuard)
   @Roles(UserRole.ADMIN)
   remove(@Param('id', ParseIntPipe) id: number) {
     return this.usuarioService.remove(+id);
   }
-
-  /*
-   controllers para los admins uwu
-*/
 }

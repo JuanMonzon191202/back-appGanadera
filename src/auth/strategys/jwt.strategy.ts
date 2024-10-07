@@ -1,26 +1,21 @@
-import { Strategy } from 'passport-jwt';
-import { PassportStrategy } from '@nestjs/passport';
 import { Injectable, UnauthorizedException } from '@nestjs/common';
+import { PassportStrategy } from '@nestjs/passport';
+import { ExtractJwt, Strategy } from 'passport-jwt';
 import { ConfigService } from '@nestjs/config';
 import { JwtPayload } from '../interfaces/jwt-payload.interface';
 import { UsuarioService } from '../../usuarios/usuario/services/usuario.service';
 import { AdminService } from 'src/usuarios/usuario/services/admin.service';
+
 @Injectable()
 export class JwtStrategy extends PassportStrategy(Strategy, 'jwt-user') {
   constructor(
-    private configService: ConfigService,
-    private usuarioService: UsuarioService,
-    private adminService: AdminService,
+    private readonly configService: ConfigService,
+    private readonly usuarioService: UsuarioService,
+    private readonly adminService: AdminService,
   ) {
     super({
-      jwtFromRequest: (req) => {
-        const data = req.headers.authorization;
-        if (data) {
-          return data.split(' ')[1];
-        }
-        return null;
-      },
-      secretOrKey: configService.get<string>('JWT_SECRET'),
+      jwtFromRequest: ExtractJwt.fromAuthHeaderAsBearerToken(),
+      secretOrKey: configService.get<string>('JWT_SECRET'), // El secreto del access token
       ignoreExpiration: false,
     });
   }
@@ -30,6 +25,7 @@ export class JwtStrategy extends PassportStrategy(Strategy, 'jwt-user') {
       throw new UnauthorizedException('Rol no proporcionado en el token');
     }
 
+    // Aquí verificamos si el usuario existe
     if (payload.rol === 'USER') {
       const user = await this.usuarioService.findOne(payload.sub);
       if (!user) {

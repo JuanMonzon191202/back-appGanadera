@@ -41,9 +41,19 @@ export class AdminService {
     });
   }
 
-  // Obtener todos los usuarios
-  async findAll(): Promise<UserAdmin[]> {
-    return this.prisma.userAdmin.findMany();
+  // Obtener todos los usuarios (sin contraseña)
+  async findAll(): Promise<Omit<UserAdmin, 'password'>[]> {
+    return this.prisma.userAdmin.findMany({
+      select: {
+        id: true,
+        nombre: true,
+        email: true,
+        isActive: true,
+        role: true,
+        createdAt: true,
+        updatedAt: true,
+      },
+    });
   }
 
   // Obtener un usuario por ID
@@ -91,8 +101,14 @@ export class AdminService {
 
   // Eliminar un usuario
   async remove(id: number): Promise<UserAdmin> {
+    const user = await this.prisma.userAdmin.findUnique({ where: { id } });
+    if (!user) {
+      throw new NotFoundException('Usuario no encontrado');
+    }
     return this.prisma.userAdmin.delete({ where: { id } });
   }
+
+  // Obtener usuario por email (sin contraseña)
   async findByEmailAdmin(email: string) {
     return this.prisma.userAdmin.findUnique({
       where: { email },
