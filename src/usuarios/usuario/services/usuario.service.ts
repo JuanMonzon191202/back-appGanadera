@@ -106,12 +106,22 @@ export class UsuarioService {
         idUsuario: true,
         email: true,
         nombreCompleto: true,
-        telefono: true,
+        telefono: true, // Número principal
         verificado: true,
         infoEmpresa: true,
         fotoPerfil: true,
         isActive: true,
         role: true,
+        telefonos: {
+          // Teléfonos adicionales
+          select: {
+            idTelefono: true,
+            numero: true,
+            tipo: true,
+            createdAt: false,
+            updatedAt: false,
+          },
+        },
       },
     });
   }
