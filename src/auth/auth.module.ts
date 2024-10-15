@@ -23,7 +23,7 @@ import { RefreshJwtStrategy } from './strategys/refreshToken.strategy';
       inject: [ConfigService],
       useFactory: async (configService: ConfigService) => ({
         secret: configService.get<string>('JWT_SECRET'), // Secreto para access token
-        signOptions: { expiresIn: '60m' }, // Expiración del access token
+        signOptions: { expiresIn: '2d' }, // Expiración del access token
       }),
     }),
   ],

@@ -5,11 +5,13 @@ import { PrismaModule } from '../../../prisma/prisma.module';
 import { AdminService } from './services/admin.service';
 import { AdminController } from './controllers/admin.controller';
 import { AuthModule } from '../../auth/auth.module';
+import { TelefonosController } from './controllers/telefono.controller';
+import { TelefonosService } from './services/telefono.service';
 
 @Module({
   imports: [PrismaModule, forwardRef(() => AuthModule)], // Importa Prisma para la interacción con la base de datos
-  controllers: [UsuarioController, AdminController],
-  providers: [UsuarioService, AdminService],
-  exports: [UsuarioService, AdminService],
+  controllers: [UsuarioController, AdminController, TelefonosController],
+  providers: [UsuarioService, AdminService, TelefonosService],
+  exports: [UsuarioService, AdminService, TelefonosService],
 })
 export class UsuarioModule {}

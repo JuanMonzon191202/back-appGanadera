@@ -5,7 +5,7 @@ import {
 } from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
 import { UsuarioService } from '../../usuarios/usuario/services/usuario.service';
-import { AdminService } from 'src/usuarios/usuario/services/admin.service';
+import { AdminService } from '../../usuarios/usuario/services/admin.service';
 import * as bcrypt from 'bcrypt';
 import { ConfigService } from '@nestjs/config';
 @Injectable()
@@ -81,10 +81,16 @@ export class AuthService {
     try {
       // Verificamos el refresh token usando el secreto correcto
       const payload = this.jwtService.verify(refreshToken, {
-        secret: this.configService.get<string>('JWT_REFRESH_SECRET'), // Asegúrate que sea el correcto
+        secret: this.configService.get<string>('JWT_REFRESH_SECRET'),
       });
 
-      // Si el token es válido, generamos un nuevo access token
+      // Verificamos si el refresh token aún está vigente (comparando el tiempo actual con 'exp')
+      const currentTime = Math.floor(Date.now() / 1000); // Tiempo actual en segundos
+      if (payload.exp < currentTime) {
+        throw new ForbiddenException('El refresh token ha expirado');
+      }
+
+      // Si el token es válido y no ha expirado, generamos un nuevo access token
       const newAccessToken = this.jwtService.sign({
         email: payload.email,
         sub: payload.sub,
