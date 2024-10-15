@@ -1,4 +1,3 @@
-/* eslint-disable @typescript-eslint/no-unused-vars */
 import { Injectable, NotFoundException } from '@nestjs/common';
 import { PrismaService } from '../../../../prisma/prisma.service';
 import { CreateUsuarioDto } from '../dto/usuarios-dto/create-usuario.dto';
@@ -106,7 +105,7 @@ export class UsuarioService {
         idUsuario: true,
         email: true,
         nombreCompleto: true,
-        telefono: true, // Número principal
+        telefono: true,
         verificado: true,
         infoEmpresa: true,
         fotoPerfil: true,
