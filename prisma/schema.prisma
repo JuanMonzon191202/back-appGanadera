@@ -11,6 +11,7 @@ generator client {
 model Usuario {
   idUsuario          Int                @id @default(autoincrement())
   idTipoUsuario      Int
+  tipoUsuario        UsuarioTipo
   email              String             @unique
   password           String
   nombreCompleto     String
@@ -35,6 +36,11 @@ model Usuario {
   productosInteres   ProductoInteres[]
   ordenesComprador   Orden[]            @relation("OrdenesComprador")
   ordenesVendedor    Orden[]            @relation("OrdenesVendedor")
+}
+enum UsuarioTipo {
+  COMPRADOR
+  VENDEDOR
+  AMBOS
 }
 
 model Like {

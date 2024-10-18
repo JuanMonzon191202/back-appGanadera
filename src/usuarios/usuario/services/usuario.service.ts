@@ -1,9 +1,14 @@
-import { Injectable, NotFoundException } from '@nestjs/common';
+import {
+  BadRequestException,
+  Injectable,
+  NotFoundException,
+} from '@nestjs/common';
 import { PrismaService } from '../../../../prisma/prisma.service';
 import { CreateUsuarioDto } from '../dto/usuarios-dto/create-usuario.dto';
 import { UpdateUsuarioDto } from '../dto/usuarios-dto/update-usuario.dto';
 import * as bcrypt from 'bcrypt';
 import { PaginationDto } from '../dto/paginacion-dto/pagination.dto';
+import { PrismaClientKnownRequestError } from '@prisma/client/runtime/library';
 
 @Injectable()
 export class UsuarioService {
@@ -22,22 +27,38 @@ export class UsuarioService {
     fotoPerfil?: string;
     isActive: boolean;
   }) {
-    const hashedPassword = await bcrypt.hash(data.password, 10);
-    return this.prisma.usuario.create({
-      data: {
-        idTipoUsuario: data.idTipoUsuario,
-        email: data.email,
-        password: hashedPassword,
-        nombreCompleto: data.nombreCompleto,
-        nombreEmpresa: data.nombreEmpresa,
-        telefono: data.telefono,
-        direccion: data.direccion,
-        infoEmpresa: data.infoEmpresa,
-        verificado: data.verificado,
-        fotoPerfil: data.fotoPerfil,
-        isActive: data.isActive,
-      },
-    });
+    try {
+      // Encripta la contraseña
+      const hashedPassword = await bcrypt.hash(data.password, 10);
+
+      // Crea el usuario en la base de datos
+      return await this.prisma.usuario.create({
+        data: {
+          idTipoUsuario: data.idTipoUsuario,
+          email: data.email,
+          password: hashedPassword,
+          nombreCompleto: data.nombreCompleto,
+          nombreEmpresa: data.nombreEmpresa,
+          telefono: data.telefono,
+          direccion: data.direccion,
+          infoEmpresa: data.infoEmpresa,
+          verificado: data.verificado,
+          fotoPerfil: data.fotoPerfil,
+          isActive: data.isActive,
+        },
+      });
+    } catch (error) {
+      // Manejo de errores para el caso de email duplicado
+      if (
+        error instanceof PrismaClientKnownRequestError &&
+        error.code === 'P2002'
+      ) {
+        throw new BadRequestException('Este correo ya está registrado.');
+      }
+
+      // Si es otro error, lo re-lanzamos
+      throw error;
+    }
   }
 
   async findAll(paginationDto: PaginationDto) {
@@ -117,8 +138,6 @@ export class UsuarioService {
             idTelefono: true,
             numero: true,
             tipo: true,
-            createdAt: false,
-            updatedAt: false,
           },
         },
       },
