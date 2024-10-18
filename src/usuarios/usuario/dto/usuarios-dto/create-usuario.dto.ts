@@ -73,7 +73,7 @@ export class CreateUsuarioDto {
 
   @IsBoolean({ message: 'El campo "verificado" debe ser un valor booleano.' })
   @IsNotEmpty({ message: 'El campo "verificado" es obligatorio.' })
-  verificado: boolean;
+  verificado: boolean = false;
 
   @IsOptional()
   @IsString({
@@ -84,5 +84,5 @@ export class CreateUsuarioDto {
 
   @IsBoolean({ message: 'El campo "isActive" debe ser un valor booleano.' })
   @IsNotEmpty({ message: 'El campo "isActive" es obligatorio.' })
-  isActive: boolean;
+  isActive: boolean = true;
 }
