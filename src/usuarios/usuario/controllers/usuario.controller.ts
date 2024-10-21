@@ -90,9 +90,9 @@ export class UsuarioController {
     const usuarioData = {
       ...createUsuarioDto,
       fotoPerfil,
-      idTipoUsuario: 1,
-      verificado: false,
-      isActive: true,
+      // idTipoUsuario: 1,
+      // verificado: false,
+      // isActive: true,
     };
     return this.usuarioService.create(usuarioData);
   }

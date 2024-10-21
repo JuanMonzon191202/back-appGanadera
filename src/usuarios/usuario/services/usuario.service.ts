@@ -9,13 +9,14 @@ import { UpdateUsuarioDto } from '../dto/usuarios-dto/update-usuario.dto';
 import * as bcrypt from 'bcrypt';
 import { PaginationDto } from '../dto/paginacion-dto/pagination.dto';
 import { PrismaClientKnownRequestError } from '@prisma/client/runtime/library';
+import { UsuarioTipo } from '../dto/enums/usuario.enum';
 
 @Injectable()
 export class UsuarioService {
   constructor(private readonly prisma: PrismaService) {}
 
   async create(data: {
-    idTipoUsuario: number;
+    tipoUsuario: string;
     email: string;
     password: string;
     nombreCompleto: string;
@@ -23,9 +24,9 @@ export class UsuarioService {
     telefono: string;
     direccion: string;
     infoEmpresa?: string;
-    verificado: boolean;
+    verificado?: boolean;
     fotoPerfil?: string;
-    isActive: boolean;
+    isActive?: boolean;
   }) {
     try {
       // Encripta la contraseña
@@ -34,7 +35,7 @@ export class UsuarioService {
       // Crea el usuario en la base de datos
       return await this.prisma.usuario.create({
         data: {
-          idTipoUsuario: data.idTipoUsuario,
+          tipoUsuario: data.tipoUsuario as UsuarioTipo,
           email: data.email,
           password: hashedPassword,
           nombreCompleto: data.nombreCompleto,
@@ -42,9 +43,9 @@ export class UsuarioService {
           telefono: data.telefono,
           direccion: data.direccion,
           infoEmpresa: data.infoEmpresa,
-          verificado: data.verificado,
+          verificado: data.verificado ?? false,
           fotoPerfil: data.fotoPerfil,
-          isActive: data.isActive,
+          isActive: data.isActive ?? true,
         },
       });
     } catch (error) {

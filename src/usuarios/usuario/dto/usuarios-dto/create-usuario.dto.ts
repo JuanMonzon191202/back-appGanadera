@@ -2,7 +2,7 @@ import {
   IsString,
   IsOptional,
   IsBoolean,
-  IsNumber,
+  IsEnum,
   IsEmail,
   IsPhoneNumber,
   MinLength,
@@ -10,11 +10,14 @@ import {
   IsUrl,
   IsNotEmpty,
 } from 'class-validator';
+import { UsuarioTipo } from '../enums/usuario.enum'; // Ajusta la ruta al enum
 
 export class CreateUsuarioDto {
-  @IsNumber({}, { message: 'El ID del tipo de usuario debe ser un número.' })
-  @IsNotEmpty({ message: 'El ID del tipo de usuario es obligatorio.' })
-  idTipoUsuario: number;
+  @IsEnum(UsuarioTipo, {
+    message: 'El tipo de usuario debe ser COMPRADOR, VENDEDOR o AMBOS.',
+  })
+  @IsNotEmpty({ message: 'El tipo de usuario es obligatorio.' })
+  tipoUsuario: UsuarioTipo;
 
   @IsEmail({}, { message: 'Debe ser un correo electrónico válido.' })
   @IsNotEmpty({ message: 'El correo electrónico es obligatorio.' })
@@ -72,8 +75,7 @@ export class CreateUsuarioDto {
   infoEmpresa?: string;
 
   @IsBoolean({ message: 'El campo "verificado" debe ser un valor booleano.' })
-  @IsNotEmpty({ message: 'El campo "verificado" es obligatorio.' })
-  verificado: boolean = false;
+  verificado?: boolean = false; // Valor predeterminado
 
   @IsOptional()
   @IsString({
@@ -83,6 +85,5 @@ export class CreateUsuarioDto {
   fotoPerfil?: string;
 
   @IsBoolean({ message: 'El campo "isActive" debe ser un valor booleano.' })
-  @IsNotEmpty({ message: 'El campo "isActive" es obligatorio.' })
-  isActive: boolean = true;
+  isActive?: boolean = true; // Valor predeterminado
 }
