@@ -165,12 +165,22 @@ export class UsuarioService {
   }
 
   async findByEmail(email: string) {
+    if (!email) {
+      throw new Error('El email no puede estar vacío');
+    }
+
     return this.prisma.usuario.findUnique({
-      where: { email },
+      where: {
+        email: email,
+      },
     });
   }
 
   async findByEmailAdmin(email: string) {
+    if (!email) {
+      throw new Error('El email no puede estar vacío');
+    }
+
     return this.prisma.userAdmin.findUnique({
       where: { email },
     });
