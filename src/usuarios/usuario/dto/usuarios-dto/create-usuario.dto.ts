@@ -119,15 +119,12 @@ export class CreateUsuarioDto {
   verificado?: boolean = false;
 
   @ApiPropertyOptional({
-    description: 'URL de la foto de perfil (opcional).',
-    example: 'https://ejemplo.com/foto-perfil.jpg',
+    description: 'Foto de perfil del usuario (opcional).',
+    type: 'string',
+    format: 'binary', // Indica que es un archivo binario
   })
   @IsOptional()
-  @IsString({
-    message: 'La URL de la foto de perfil debe ser una cadena de texto.',
-  })
-  @IsUrl({}, { message: 'Debe ser una URL válida para la foto de perfil.' })
-  fotoPerfil?: string;
+  fotoPerfil?: any; // Cambia el tipo según lo necesites
 
   @ApiProperty({
     description: 'Indica si el usuario está activo.',

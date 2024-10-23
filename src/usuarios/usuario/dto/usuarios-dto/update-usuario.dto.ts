@@ -6,8 +6,15 @@ import {
   MinLength,
   IsUrl,
 } from 'class-validator';
+import { ApiProperty } from '@nestjs/swagger';
 
 export class UpdateUsuarioDto {
+  @ApiProperty({
+    required: false,
+    description: 'El nombre completo del usuario.',
+    maxLength: 100,
+    minLength: 3,
+  })
   @IsOptional()
   @IsString({ message: 'El nombre completo debe ser una cadena de texto.' })
   @MaxLength(100, {
@@ -18,6 +25,12 @@ export class UpdateUsuarioDto {
   })
   nombreCompleto?: string;
 
+  @ApiProperty({
+    required: false,
+    description: 'El nombre de la empresa del usuario.',
+    maxLength: 100,
+    minLength: 3,
+  })
   @IsOptional()
   @IsString({
     message: 'El nombre de la empresa debe ser una cadena de texto.',
@@ -30,6 +43,10 @@ export class UpdateUsuarioDto {
   })
   nombreEmpresa?: string;
 
+  @ApiProperty({
+    required: false,
+    description: 'El número de teléfono del usuario.',
+  })
   @IsOptional()
   @IsString({ message: 'El teléfono debe ser una cadena de texto.' })
   @IsPhoneNumber('MX', {
@@ -37,6 +54,11 @@ export class UpdateUsuarioDto {
   })
   telefono?: string;
 
+  @ApiProperty({
+    required: false,
+    description: 'La dirección del usuario.',
+    maxLength: 150,
+  })
   @IsOptional()
   @IsString({ message: 'La dirección debe ser una cadena de texto.' })
   @MaxLength(150, {
@@ -44,6 +66,11 @@ export class UpdateUsuarioDto {
   })
   direccion?: string;
 
+  @ApiProperty({
+    required: false,
+    description: 'Información adicional sobre la empresa del usuario.',
+    maxLength: 500,
+  })
   @IsOptional()
   @IsString({
     message: 'La información de la empresa debe ser una cadena de texto.',
@@ -54,6 +81,10 @@ export class UpdateUsuarioDto {
   })
   infoEmpresa?: string;
 
+  @ApiProperty({
+    required: false,
+    description: 'URL de la foto de perfil del usuario.',
+  })
   @IsOptional()
   @IsString({
     message: 'La URL de la foto de perfil debe ser una cadena de texto.',

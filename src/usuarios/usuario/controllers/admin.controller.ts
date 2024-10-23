@@ -32,7 +32,7 @@ export class AdminController {
 
   // Endpoint para crear un nuevo administrador (solo ADMIN)
   @Post('create')
-  @UseGuards(AuthGuard('jwt-admin'), RolesGuard)
+  @UseGuards(AuthGuard('jwt-user'), RolesGuard)
   @Roles(UserRole.ADMIN)
   async create(@Body() createUserAdminDto: CreateUserAdminDto) {
     return this.adminService.create(createUserAdminDto);
@@ -40,7 +40,7 @@ export class AdminController {
 
   // Endpoint para actualizar un administrador existente (solo ADMIN)
   @Patch(':id')
-  @UseGuards(AuthGuard('jwt-admin'), RolesGuard)
+  @UseGuards(AuthGuard('jwt-user'), RolesGuard)
   @Roles(UserRole.ADMIN)
   async update(
     @Param('id', ParseIntPipe) id: number,

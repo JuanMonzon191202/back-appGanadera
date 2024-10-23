@@ -32,6 +32,7 @@ import { AuthGuard } from '@nestjs/passport';
 import { RolesGuard } from '../../../auth/guards/roles.guard';
 import { Express } from 'express';
 import { ApiBearerAuth, ApiTags } from '@nestjs/swagger';
+import { Usuario } from '@prisma/client';
 
 @ApiTags('Usuarios')
 @ApiBearerAuth()
@@ -71,32 +72,15 @@ export class UsuarioController {
   async create(
     @Body() createUsuarioDto: CreateUsuarioDto,
     @UploadedFile() file: Express.Multer.File, // Cambia a `Express.Multer.File`
-  ) {
+  ): Promise<Usuario> {
+    // Define el tipo de retorno si es posible
     const fotoPerfil = file ? file.path : null;
-
-    if (!createUsuarioDto.email) {
-      throw new BadRequestException('El campo email es obligatorio.');
-    }
-    if (!createUsuarioDto.password) {
-      throw new BadRequestException('El campo password es obligatorio.');
-    }
-    if (!createUsuarioDto.nombreCompleto) {
-      throw new BadRequestException('El campo nombre Completo es obligatorio.');
-    }
-    if (!createUsuarioDto.telefono) {
-      throw new BadRequestException('El campo telefono es obligatorio.');
-    }
-    if (!createUsuarioDto.direccion) {
-      throw new BadRequestException('El campo direccion es obligatorio.');
-    }
 
     const usuarioData = {
       ...createUsuarioDto,
       fotoPerfil,
-      // idTipoUsuario: 1,
-      // verificado: false,
-      // isActive: true,
     };
+
     return this.usuarioService.create(usuarioData);
   }
 
