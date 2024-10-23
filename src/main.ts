@@ -32,7 +32,9 @@ async function bootstrap() {
   // Configuracion del swagger
   const config = new DocumentBuilder()
     .setTitle('API de Direcciones')
-    .setDescription('Documentación de la API para gestión de direcciones')
+    .setDescription(
+      'Documentación de la API para gestión de la api, Grimaldo se la come',
+    )
     .setVersion('1.0')
     .addBearerAuth() // Agrega soporte para autenticación con JWT
     .build();
