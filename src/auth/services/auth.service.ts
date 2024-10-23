@@ -8,6 +8,8 @@ import { UsuarioService } from '../../usuarios/usuario/services/usuario.service'
 import { AdminService } from '../../usuarios/usuario/services/admin.service';
 import * as bcrypt from 'bcrypt';
 import { ConfigService } from '@nestjs/config';
+import { LoginDto } from '../dtos/login.dto';
+
 @Injectable()
 export class AuthService {
   constructor(
@@ -47,8 +49,8 @@ export class AuthService {
   }
 
   // Método para iniciar sesión de usuarios regulares
-  async login(body: { email: string; password: string }) {
-    const user = await this.validateUser(body.email, body.password);
+  async login(loginDto: LoginDto) {
+    const user = await this.validateUser(loginDto.email, loginDto.password);
     if (!user) {
       throw new UnauthorizedException('Credenciales inválidas');
     }
@@ -65,7 +67,13 @@ export class AuthService {
   }
 
   // Método para iniciar sesión de administradores
-  async logAdmin(admin: any) {
+  async logAdmin(loginDto: LoginDto) {
+    // Cambia el parámetro para usar el DTO
+    const admin = await this.validateAdmin(loginDto.email, loginDto.password);
+    if (!admin) {
+      throw new UnauthorizedException('Credenciales inválidas');
+    }
+
     const payload = {
       email: admin.email,
       sub: admin.id,

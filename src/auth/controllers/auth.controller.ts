@@ -2,23 +2,23 @@
 import { Controller, Post, Body } from '@nestjs/common';
 import { AuthService } from '../services/auth.service';
 import { ApiBearerAuth, ApiTags } from '@nestjs/swagger';
+import { LoginDto } from '../dtos/login.dto';
 
 @ApiTags('Auth')
-@ApiBearerAuth()
 @Controller('auth')
 export class AuthController {
   constructor(private authService: AuthService) {}
 
   // Endpoint para iniciar sesión de usuarios regulares
   @Post('login')
-  async login(@Body() body: { email: string; password: string }) {
-    return this.authService.login(body);
+  async login(@Body() loginDto: LoginDto) {
+    return this.authService.login(loginDto);
   }
 
   // Endpoint para iniciar sesión de administradores
   @Post('login/admin/')
-  async logadmin(@Body() body: { email: string; password: string }) {
-    return this.authService.logAdmin(body);
+  async logadmin(@Body() loginDto: LoginDto) {
+    return this.authService.logAdmin(loginDto);
   }
 
   // Endpoint para solicitar un nuevo access token con el refresh token

@@ -36,7 +36,7 @@ async function bootstrap() {
       'Documentación de la API para gestión de la api, Grimaldo se la come',
     )
     .setVersion('1.0')
-    .addBearerAuth() // Agrega soporte para autenticación con JWT
+    //.addBearerAuth() // Agrega soporte para autenticación con JWT
     .build();
 
   const document = SwaggerModule.createDocument(app, config);
