@@ -31,7 +31,7 @@ export class TelefonosController {
   //   return this.telefonoService.create(createTelefonoDto);
   // }
   @Post()
-  @UseGuards(AuthGuard('jwt-user'))
+  @UseGuards(AuthGuard('jwt-user'), RolesGuard)
   @Roles(UserRole.ADMIN, UserRole.USER)
   async createa(
     @Req() req: Request & { user?: User },

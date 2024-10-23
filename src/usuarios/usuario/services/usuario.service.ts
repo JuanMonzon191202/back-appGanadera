@@ -141,6 +141,16 @@ export class UsuarioService {
             tipo: true,
           },
         },
+        direcciones: {
+          select: {
+            idDireccion: true,
+            calle: true,
+            ciudad: true,
+            codigoPostal: true,
+            estado: true,
+            pais: true,
+          },
+        },
       },
     });
   }
