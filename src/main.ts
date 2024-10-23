@@ -3,6 +3,7 @@ import { AppModule } from './app.module';
 import { NestExpressApplication } from '@nestjs/platform-express';
 import * as path from 'path';
 import { ValidationPipe } from '@nestjs/common';
+import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
 
 async function bootstrap() {
   const app = await NestFactory.create<NestExpressApplication>(AppModule);
@@ -27,6 +28,17 @@ async function bootstrap() {
       transform: true, // Transforma automáticamente los datos a los tipos especificados en los DTOs
     }),
   );
+
+  // Configuracion del swagger
+  const config = new DocumentBuilder()
+    .setTitle('API de Direcciones')
+    .setDescription('Documentación de la API para gestión de direcciones')
+    .setVersion('1.0')
+    .addBearerAuth() // Agrega soporte para autenticación con JWT
+    .build();
+
+  const document = SwaggerModule.createDocument(app, config);
+  SwaggerModule.setup('api/docs', app, document); // Ruta donde estará la documentación de Swagger
 
   await app.listen(3000);
 }

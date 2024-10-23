@@ -21,7 +21,10 @@ import { AuthGuard } from '@nestjs/passport';
 import { RolesGuard } from '../../auth/guards/roles.guard';
 import { Roles } from '../../auth/decorators/roles.decorator';
 import { UserRole } from '../../usuarios/usuario/dto/enums/user-role.enum';
+import { ApiBearerAuth, ApiTags } from '@nestjs/swagger';
 
+@ApiTags('Subcategoria')
+@ApiBearerAuth()
 @Controller('subcategorias')
 export class SubcategoriasController {
   constructor(private readonly subcategoriaService: SubcategoriaService) {}

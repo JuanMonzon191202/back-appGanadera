@@ -23,7 +23,10 @@ import { UserRole } from '../../usuarios/usuario/dto/enums/user-role.enum';
 import { AuthGuard } from '@nestjs/passport';
 import { RolesGuard } from '../../auth/guards/roles.guard';
 import { PaginationDto } from './dtos/pagination.dto';
+import { ApiBearerAuth, ApiTags } from '@nestjs/swagger';
 
+@ApiTags('Productos')
+@ApiBearerAuth()
 @Controller('productos')
 export class ProductosController {
   constructor(private readonly productosService: ProductosService) {}

@@ -19,7 +19,10 @@ import { Roles } from '../../../auth/decorators/roles.decorator';
 import { UserRole } from '../../usuario/dto/enums/user-role.enum';
 import { AuthGuard } from '@nestjs/passport';
 import { User } from '../../../types/usuario.interface';
+import { ApiBearerAuth, ApiTags } from '@nestjs/swagger';
 
+@ApiTags('Telefonos')
+@ApiBearerAuth()
 @Controller('telefonos')
 export class TelefonosController {
   constructor(private readonly telefonoService: TelefonosService) {}

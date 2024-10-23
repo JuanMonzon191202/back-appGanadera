@@ -17,7 +17,10 @@ import { Roles } from '../../../auth/decorators/roles.decorator';
 import { UserRole } from '../dto/enums/user-role.enum';
 import { AuthGuard } from '@nestjs/passport';
 import { User } from '../../../types/usuario.interface';
+import { ApiBearerAuth, ApiTags } from '@nestjs/swagger';
 
+@ApiTags('Direcciones')
+@ApiBearerAuth()
 @Controller('direcciones')
 export class DireccionesController {
   constructor(private readonly direccionService: DireccionesService) {}

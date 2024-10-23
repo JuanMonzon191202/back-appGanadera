@@ -19,7 +19,10 @@ import { UserRole } from '../../usuario/dto/enums/user-role.enum';
 import { RolesGuard } from '../../../auth/guards/roles.guard';
 import { Roles } from '../../../auth/decorators/roles.decorator';
 import { AuthService } from '../../../auth/services/auth.service';
+import { ApiBearerAuth, ApiTags } from '@nestjs/swagger';
 
+@ApiTags('Admin')
+@ApiBearerAuth()
 @Controller('admin')
 export class AdminController {
   constructor(
