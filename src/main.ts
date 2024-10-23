@@ -31,7 +31,7 @@ async function bootstrap() {
 
   // Configuracion del swagger
   const config = new DocumentBuilder()
-    .setTitle('API de Direcciones')
+    .setTitle('API CornApp uwu')
     .setDescription(
       'Documentación de la API para gestión de la api, Grimaldo se la come',
     )
