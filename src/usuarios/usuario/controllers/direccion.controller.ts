@@ -18,6 +18,7 @@ import { UserRole } from '../dto/enums/user-role.enum';
 import { AuthGuard } from '@nestjs/passport';
 import { User } from '../../../types/usuario.interface';
 import { ApiBearerAuth, ApiTags } from '@nestjs/swagger';
+import { CreateDireccionArrayDto } from '../dto/direcciones-dto/Create-direcciones-arrayDto.dto';
 
 @ApiTags('Direcciones')
 @ApiBearerAuth()
@@ -30,14 +31,19 @@ export class DireccionesController {
   @Roles(UserRole.ADMIN, UserRole.USER)
   async create(
     @Req() req: Request & { user?: User },
-    @Body() createDireccionDto: CreateDireccionDto,
+    @Body() createDireccionArrayDto: CreateDireccionArrayDto, // Cambiado para recibir un array de direcciones
   ) {
     const userId = req.user?.idUsuario;
 
     if (!userId) {
       throw new UnauthorizedException('No se puede encontrar el ID de usuario');
     }
-    return this.direccionService.create(userId, createDireccionDto);
+
+    // Llama al servicio para crear múltiples direcciones
+    return this.direccionService.create(
+      userId,
+      createDireccionArrayDto.direcciones,
+    );
   }
 
   @Get('mis-direcciones')

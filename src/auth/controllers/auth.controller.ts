@@ -3,6 +3,7 @@ import { Controller, Post, Body } from '@nestjs/common';
 import { AuthService } from '../services/auth.service';
 import { ApiBearerAuth, ApiTags } from '@nestjs/swagger';
 import { LoginDto } from '../dtos/login.dto';
+import { RefreshTokenDto } from '../dtos/refrestoken.dto';
 
 @ApiTags('Auth')
 @Controller('auth')
@@ -23,7 +24,8 @@ export class AuthController {
 
   // Endpoint para solicitar un nuevo access token con el refresh token
   @Post('refresh-token')
-  async refreshToken(@Body() body: { refresh_token: string }) {
+  // @ApiBearerAuth()
+  async refreshToken(@Body() body: RefreshTokenDto) {
     return this.authService.refreshAccessToken(body.refresh_token);
   }
 }

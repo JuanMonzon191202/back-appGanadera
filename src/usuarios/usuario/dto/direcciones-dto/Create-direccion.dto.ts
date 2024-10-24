@@ -58,11 +58,4 @@ export class CreateDireccionDto {
   @IsString({ message: 'El país debe ser una cadena de texto.' })
   @Length(5, 50, { message: 'El país debe tener entre 5 y 50 caracteres.' })
   pais: string;
-
-  @ApiProperty({
-    description: 'ID del usuario propietario de la dirección.',
-    example: 1,
-  })
-  @IsNotEmpty({ message: 'El ID del usuario es obligatorio.' })
-  idUsuario: number;
 }

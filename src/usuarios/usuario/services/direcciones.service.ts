@@ -12,17 +12,22 @@ import { UpdateDireccionDto } from '../dto/direcciones-dto/Update-direccion.dto'
 export class DireccionesService {
   constructor(private readonly prisma: PrismaService) {}
 
-  async create(idUsuario: number, createDireccionDto: CreateDireccionDto) {
-    return this.prisma.direccion.create({
-      data: {
-        idUsuario: idUsuario,
-        calle: createDireccionDto.calle,
-        ciudad: createDireccionDto.ciudad,
-        codigoPostal: createDireccionDto.codigoPostal,
-        estado: createDireccionDto.estado,
-        pais: createDireccionDto.pais,
-      },
-    });
+  async create(idUsuario: number, direcciones: CreateDireccionDto[]) {
+    // Uso de una transacción para insertar múltiples direcciones
+    return this.prisma.$transaction(
+      direcciones.map((direccion) =>
+        this.prisma.direccion.create({
+          data: {
+            idUsuario: idUsuario,
+            calle: direccion.calle,
+            ciudad: direccion.ciudad,
+            codigoPostal: direccion.codigoPostal,
+            estado: direccion.estado,
+            pais: direccion.pais,
+          },
+        }),
+      ),
+    );
   }
 
   async findAllByUserId(idUsuario: number) {
